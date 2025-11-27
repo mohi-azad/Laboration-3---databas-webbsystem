@@ -25,12 +25,12 @@ namespace Laboration_3.Models
             // parameter passning
             string sqlstring = "Insert Into Members(FirstName, LastName, Email, Phone, Age, Score) Values(@FirstName, @LastName, @Email, @Phone, @Age, @Score)";
             SqlCommand sqlCommand = new SqlCommand(sqlstring, sqlConnection);
-            sqlCommand.Parameters.Add("FirstName", System.Data.SqlDbType.NVarChar, 30).Value = memberDetails.FirstName;
-            sqlCommand.Parameters.Add("LastName", System.Data.SqlDbType.NVarChar, 40).Value = memberDetails.LastName;
-            sqlCommand.Parameters.Add("Email", System.Data.SqlDbType.NVarChar, 60).Value = memberDetails.Email;
-            sqlCommand.Parameters.Add("Phone", System.Data.SqlDbType.NVarChar, 20).Value = memberDetails.Phone;
-            sqlCommand.Parameters.Add("Age", System.Data.SqlDbType.Int, 3).Value = memberDetails.Age;
-            sqlCommand.Parameters.Add("Score", System.Data.SqlDbType.Int, 15).Value = memberDetails.Score;
+            sqlCommand.Parameters.Add("@FirstName", System.Data.SqlDbType.NVarChar, 30).Value = memberDetails.FirstName;
+            sqlCommand.Parameters.Add("@LastName", System.Data.SqlDbType.NVarChar, 40).Value = memberDetails.LastName;
+            sqlCommand.Parameters.Add("@Email", System.Data.SqlDbType.NVarChar, 60).Value = memberDetails.Email;
+            sqlCommand.Parameters.Add("@Phone", System.Data.SqlDbType.NVarChar, 20).Value = memberDetails.Phone;
+            sqlCommand.Parameters.Add("@Age", System.Data.SqlDbType.Int, 3).Value = memberDetails.Age;
+            sqlCommand.Parameters.Add("@Score", System.Data.SqlDbType.Int, 15).Value = memberDetails.Score;
 
 
             try
@@ -129,9 +129,9 @@ namespace Laboration_3.Models
             // Skapa koppling mot lokal instans av databas
             sqlConnection.ConnectionString =
                 "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BiljardKlubb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            string sqlstring = "Select * From Members Where MemberId =@memberId";
+            string sqlstring = "Select * From Members Where MemberId =@id";
             SqlCommand sqlCommand = new SqlCommand(sqlstring, sqlConnection);
-            sqlCommand.Parameters.Add("MemberId", SqlDbType.Int).Value = memberId;
+            sqlCommand.Parameters.Add("id", SqlDbType.Int).Value = memberId;
             SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
             DataSet dataSet = new DataSet();
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 // lägger till modellen
 using Laboration_3.Models;
+using AspNetCoreGeneratedDocument;
 namespace Laboration_3.Controllers
 {
     public class MemberController : Controller
@@ -41,12 +42,12 @@ namespace Laboration_3.Controllers
 
         // metod för att visa en medlem
         [HttpGet]
-        public ActionResult UpdateMember(int memberid)
+        public ActionResult UpdateMember(int id)
         {
             MemberDetails memberDetails = new MemberDetails();
             MemberMethods memberMethods = new MemberMethods();
             string error = "";
-            memberDetails = memberMethods.GetMemberDetails(memberid, out error);
+            memberDetails = memberMethods.GetMemberDetails(id, out error);
 
             // ViewBag.antal = HttpContext.Session.GetString("antal");
             ViewBag.error = error;
@@ -68,7 +69,25 @@ namespace Laboration_3.Controllers
             ViewBag.error = error;
             return View(memberDetails);
         }
+
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View("CreateMember");
+        }
+        [HttpPost]
+        public IActionResult Create(MemberDetails memberDetails)
+        {
+            string errormsg = "";
+            MemberMethods memberMethods = new MemberMethods();
+            int result = memberMethods.InsertMember(memberDetails, out errormsg);
+            if(result == 1)
+            {
+                return RedirectToAction("SelectMembers");
+            }
+            ViewBag.error = errormsg;
+            return View("CreateMember", memberDetails);
+        }
     }
-
-
 }
