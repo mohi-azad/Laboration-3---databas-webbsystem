@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Laboration_3.Models.MemberDetails>
+
+<h2>Select Members</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().MemberId)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().FirstName)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().LastName)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().Email)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().Phone)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().Age)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().Score)</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MemberId</td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@item.Age</td>
+                <td>@item.Score</td>
+
+                <td>
+                    @Html.ActionLink("Edit", "UpdateMember", new { id = item.MemberId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.MemberId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.MemberId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
