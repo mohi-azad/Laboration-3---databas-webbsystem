@@ -81,6 +81,11 @@ namespace Laboration_3.Controllers
         {
             string errormsg = "";
             MemberMethods memberMethods = new MemberMethods();
+            if (memberMethods.MemberExists(memberDetails.Email, memberDetails.Phone, out errormsg))
+            {
+                ViewBag.error = "A member with the same email or phone number already exists!";
+                return View("CreateMember", memberDetails);
+            }
             int result = memberMethods.InsertMember(memberDetails, out errormsg);
             if(result == 1)
             {
@@ -88,6 +93,39 @@ namespace Laboration_3.Controllers
             }
             ViewBag.error = errormsg;
             return View("CreateMember", memberDetails);
+        }
+
+        // metod för att ta bort en medlem
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            MemberMethods memberMethods = new MemberMethods();
+            string error = "";
+            MemberDetails memberDetails = memberMethods.GetMemberDetails(id, out error);
+            if(memberDetails == null)
+            {
+                ViewBag.error = "Member not found!";
+                return RedirectToAction("SelectMembers");
+            }
+            return View("DeleteMember", memberDetails);
+        }
+
+        [HttpPost]
+        public IActionResult Deleted(int MemberId)
+        {
+            MemberMethods memberMethods = new MemberMethods();
+            string error = "";
+            int i = memberMethods.DeleteMember(MemberId, out error);
+            if(i > 0)
+            {
+                return RedirectToAction("SelectMembers");
+            }
+            else
+            {
+                ViewBag.error = error;
+                MemberDetails memberDetails = memberMethods.GetMemberDetails(MemberId, out error);
+                return View("DeleteMember", memberDetails);
+            }
         }
     }
 }

@@ -218,5 +218,70 @@ namespace Laboration_3.Models
             }
         }
 
+        // en method för att undvika dubbletter vid insert
+        public bool MemberExists(string email, string phone, out string errormsg)
+        {
+            SqlConnection sqlConnection = new SqlConnection();
+            sqlConnection.ConnectionString =
+                  "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BiljardKlubb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+            string sqlstring = "SELECT COUNT (*) FROM Members Where Email =@Email OR Phone =@Phone";
+            SqlCommand sqlCommand = new SqlCommand(sqlstring, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@Email", email);
+            sqlCommand.Parameters.AddWithValue("@Phone", phone);
+
+            try
+            {
+                sqlConnection.Open();
+                int count = (int)sqlCommand.ExecuteScalar();
+                errormsg = "";
+                return count > 0;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return true;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+
+        // metoden DELETE för att ta bort en member från databasen
+        public int DeleteMember(int memberId, out string errormsg)
+        {
+            SqlConnection sqlConnection = new SqlConnection();
+            sqlConnection.ConnectionString =
+                 "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BiljardKlubb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            string sqlstring = "DELETE From Members Where MemberId = @MemberId";
+            SqlCommand sqlCommand = new SqlCommand( sqlstring, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@MemberId", memberId);
+
+            try
+            {
+                sqlConnection.Open();
+                int i = sqlCommand.ExecuteNonQuery();
+                if(i > 0)
+                {
+                    errormsg = "";
+                }
+                else
+                {
+                    errormsg = "No member deleted!";
+                    return i;
+                }
+                return i;
+            }
+            catch(Exception e) 
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally { 
+                sqlConnection.Close(); 
+            }
+        }
+
     }
 }
