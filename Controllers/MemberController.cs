@@ -23,20 +23,30 @@ namespace Laboration_3.Controllers
             i = memberMethods.InsertMember(memberDetails, out error);
             ViewBag.error = error;
             ViewBag.antal = i;
-            return View();
+            return View("CreateMember");
         }
 
         // metod för att visa medlemmar
-        public ActionResult SelectMembers()
+        public ActionResult SelectMembers(string search)
         {
-            List<MemberDetails> memberDetailsList = new List<MemberDetails>();
             MemberMethods memberMethods = new MemberMethods();
             string error = "";
-            memberDetailsList = memberMethods.GetMemberDetailsList(out error);
-
-            // ViewBag.antal = HttpContext.Session.GetString("antal");
+            List<MemberDetails> memberList;
+            if (!string.IsNullOrEmpty(search))
+            {
+                memberList = memberMethods.SearchMembers(search, out error);
+                ViewBag.search = search;
+                if(memberList.Count == 0)
+                {
+                    ViewBag.msg = "No member found!";
+                }
+            }
+            else
+            {
+                memberList = memberMethods.GetMemberDetailsList(out error);
+            }
             ViewBag.error = error;
-            return View(memberDetailsList);
+            return View(memberList);
         }
 
 
@@ -127,5 +137,26 @@ namespace Laboration_3.Controllers
                 return View("DeleteMember", memberDetails);
             }
         }
+
+
+        // metod för filtrera member
+        [HttpGet]
+        public IActionResult FilterMembers(string firstName, string lastName, int? minAge, int? maxAge, int? minScore, int? maxScore)
+        {
+            MemberMethods memberMethods = new MemberMethods();
+            string errormsg;
+            var filtered = memberMethods.FilterMembers(firstName, lastName, minAge, maxAge, minScore, maxScore, out errormsg);
+            ViewBag.error = errormsg;
+            return View("FilterMembers", filtered);
+        }
+
+
+        // visa filtervyn
+        [HttpGet]
+        public IActionResult FilterView()
+        {
+            return View("FilterMembers");
+        }
+
     }
 }

@@ -1,9 +1,21 @@
 ﻿@model IEnumerable<Laboration_3.Models.MemberDetails>
 
 <h2>Select Members</h2>
+<form asp-action="SelectMembers" method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="search" value="@ViewBag.search" placeholder="Search..." class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Search</button>
+</form>
 
-<p>
+@if (ViewBag.msg != null)
+{
+    <div class="alert alert-info">@ViewBag.msg</div>
+}
+
+<p> 
     <a asp-action="Create" class="btn btn-success">Create New Member</a>
+    <a asp-action="FilterView" class="btn btn-success">Filter Members</a>
 </p>
 
 <table class="table">

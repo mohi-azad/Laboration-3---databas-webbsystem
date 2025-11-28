@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlTypes;
 using System.Linq.Expressions;
+using System.Numerics;
 using Microsoft.Data.SqlClient;
 namespace Laboration_3.Models
 {
@@ -283,5 +284,105 @@ namespace Laboration_3.Models
             }
         }
 
+        // sökmetod som kan söka fram en medlem
+        public List<MemberDetails> SearchMembers(string keyword, out string errormsg)
+        {
+            SqlConnection sqlConnection = new SqlConnection();
+            sqlConnection.ConnectionString =
+                  "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BiljardKlubb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+            List<MemberDetails> members = new List<MemberDetails>();
+
+            errormsg = "";
+            
+
+            string sqlstring = @"SELECT * FROM Members WHERE FirstName LIKE @Search OR LastName LIKE @Search OR MemberId LIKE @Search OR Phone LIKE @Search";
+            SqlCommand cmd = new SqlCommand(sqlstring, sqlConnection);
+            cmd.Parameters.AddWithValue("@Search", "%" + keyword + "%");
+
+            try
+            {
+                sqlConnection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                // gå igenom alla medlemmar som matchar sökningen
+                while (reader.Read())
+                {
+                    MemberDetails m = new MemberDetails();
+                    m.MemberId = (int)reader["MemberId"];
+                    m.FirstName = reader["FirstName"].ToString();
+                    m.LastName = reader["LastName"].ToString();
+                    m.Email = reader["Email"].ToString();
+                    m.Phone = reader["Phone"].ToString();
+                    m.Age = (int)reader["Age"];
+                    m.Score = (int)reader["Score"];
+
+                    members.Add(m);
+                }
+                reader.Close();
+            }
+            catch(Exception e)
+            {
+                errormsg = e.Message;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return members;
+        }
+
+        // metod för att filtrera medlemmar
+        public List<MemberDetails> FilterMembers(string firstName, string lastName, int? minAge, int? maxAge, int? minScore, int? maxScore, out string errormsg)
+        {
+            SqlConnection sqlConnection = new SqlConnection();
+            sqlConnection.ConnectionString =
+                  "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BiljardKlubb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+            List<MemberDetails> filtMembers = new List<MemberDetails>();
+            errormsg = "";
+            string sqlstring = "SELECT * FROM Members WHERE 1=1";
+            if (!string.IsNullOrEmpty(firstName)) sqlstring += " AND FirstName LIKE @FirstName";
+            if (!string.IsNullOrEmpty(lastName)) sqlstring += " AND LastName LIKE @LastName";
+            if (minAge.HasValue)sqlstring += " AND Age >= @MinAge";
+            if (maxAge.HasValue)sqlstring += " AND Age <= @MaxAge";
+            if (minScore.HasValue)sqlstring += " AND Score >= @MinScore";
+            if (maxScore.HasValue) sqlstring += " AND Score <= @MaxScore";
+            SqlCommand sqlCommand = new SqlCommand(sqlstring, sqlConnection);
+
+            if (!string.IsNullOrEmpty(firstName)) sqlCommand.Parameters.AddWithValue("@FirstName", "%" + firstName + "%");
+            if (!string.IsNullOrEmpty(lastName)) sqlCommand.Parameters.AddWithValue("@LastName", "%" + lastName + "%");
+            if (minAge.HasValue) sqlCommand.Parameters.AddWithValue("@MinAge", minAge.Value);
+            if (maxAge.HasValue) sqlCommand.Parameters.AddWithValue("@MaxAge", maxAge.Value);
+            if (minScore.HasValue) sqlCommand.Parameters.AddWithValue("@MinScore", minScore.Value);
+            if (maxScore.HasValue) sqlCommand.Parameters.AddWithValue("@MaxScore", maxScore.Value);
+
+            try
+            {
+                sqlConnection.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    MemberDetails m = new MemberDetails();
+                    m.MemberId = (int)reader["MemberId"];
+                    m.FirstName = reader["FirstName"].ToString();
+                    m.LastName= reader["LastName"].ToString();
+                    m.Email = reader["Email"].ToString();
+                    m.Phone = reader["Phone"].ToString();
+                    m.Age= (int)reader["Age"];
+                    m.Score = (int)reader["Score"];
+                    filtMembers.Add(m);
+                }
+                reader.Close();
+            }
+            catch(Exception ex) 
+            {
+                errormsg = ex.Message;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return filtMembers;
+        }
     }
 }

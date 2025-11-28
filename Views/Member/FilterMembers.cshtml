@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Laboration_3.Models.MemberDetails>
+
+<h2>Filter Members</h2>
+
+<form asp-action="FilterMembers" method="get" class="mb-4">
+
+    <div class="row">
+        <div class="col-md-4">
+            <label>First Name</label>
+            <input type="text" name="firstName" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label>Last Name</label>
+            <input type="text" name="lastName" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label>Min Age</label>
+            <input type="number" name="minAge" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <label>Max Age</label>
+            <input type="number" name="maxAge" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label>Min Score</label>
+            <input type="number" name="minScore" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label>Max Score</label>
+            <input type="number" name="maxScore" class="form-control" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Filter</button>
+</form>
+
+@if (Model != null)
+{
+    <h3>Results:</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Age</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No members found</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MemberId</td>
+                        <td>@item.FirstName</td>
+                        <td>@item.LastName</td>
+                        <td>@item.Age</td>
+                        <td>@item.Score</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
