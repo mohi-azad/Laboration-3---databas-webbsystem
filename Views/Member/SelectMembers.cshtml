@@ -18,6 +18,63 @@
     <a asp-action="FilterView" class="btn btn-success">Filter Members</a>
 </p>
 
+
+<div class="mb-3">
+
+    <!-- Sortering på namn -->
+    <a asp-action="SelectMembers" 
+       asp-route-search="@ViewBag.search"
+       asp-route-sortField="FirstName" 
+       asp-route-sortOrder="ASC" 
+       class="btn btn-outline-primary">
+        Name A → Ö
+    </a>
+
+    <a asp-action="SelectMembers" 
+       asp-route-search="@ViewBag.search"
+       asp-route-sortField="FirstName" 
+       asp-route-sortOrder="DESC" 
+       class="btn btn-outline-primary">
+        Name Ö → A
+    </a>
+
+    <!-- Sortering på ålder -->
+    <a asp-action="SelectMembers"
+       asp-route-search="@ViewBag.search"
+       asp-route-sortField="Age"
+       asp-route-sortOrder="ASC"
+       class="btn btn-outline-success">
+        Age ↑
+    </a>
+
+    <a asp-action="SelectMembers"
+       asp-route-search="@ViewBag.search"
+       asp-route-sortField="Age"
+       asp-route-sortOrder="DESC"
+       class="btn btn-outline-success">
+        Age ↓
+    </a>
+
+    <!-- Sortering på poäng -->
+    <a asp-action="SelectMembers" 
+       asp-route-search="@ViewBag.search"
+       asp-route-sortField="Score" 
+       asp-route-sortOrder="ASC" 
+       class="btn btn-outline-success">
+        Score ↑
+    </a>
+
+    <a asp-action="SelectMembers" 
+       asp-route-search="@ViewBag.search"
+       asp-route-sortField="Score" 
+       asp-route-sortOrder="DESC" 
+       class="btn btn-outline-success">
+        Score ↓
+    </a>
+
+</div>
+
+
 <table class="table">
     <thead>
         <tr>

@@ -6,6 +6,7 @@ namespace Laboration_3.Controllers
 {
     public class MemberController : Controller
     {
+        /*
         public IActionResult InsertMember()
         {
             MemberDetails memberDetails = new MemberDetails();
@@ -25,9 +26,10 @@ namespace Laboration_3.Controllers
             ViewBag.antal = i;
             return View("CreateMember");
         }
+        */
 
         // metod för att visa medlemmar
-        public ActionResult SelectMembers(string search)
+        public ActionResult SelectMembers(string search, string sortField, string sortOrder)
         {
             MemberMethods memberMethods = new MemberMethods();
             string error = "";
@@ -45,6 +47,33 @@ namespace Laboration_3.Controllers
             {
                 memberList = memberMethods.GetMemberDetailsList(out error);
             }
+
+            //sorteringshantering
+            if (!string.IsNullOrEmpty(sortField))
+            {
+                switch (sortField)
+                {
+                    case "FirstName":
+                        memberList = sortOrder == "DESC"  
+                        ? memberList.OrderByDescending(m => m.FirstName).ToList()
+                        : memberList.OrderBy(m => m.FirstName).ToList();
+                        break;
+
+                    case "Age":
+                        memberList = sortOrder == "DESC"
+                            ? memberList.OrderByDescending(m => m.Age).ToList()
+                            : memberList.OrderBy(m => m.Age).ToList();
+                        break;
+
+                    case "Score":
+                        memberList = sortOrder == "DESC" 
+                            ? memberList.OrderByDescending(m => m.Score).ToList()
+                            : memberList.OrderBy(m => m.Score).ToList();
+                        break;
+                }
+            }
+            ViewBag.sortField = sortField;
+            ViewBag.sortOrder = sortOrder;
             ViewBag.error = error;
             return View(memberList);
         }
@@ -58,52 +87,72 @@ namespace Laboration_3.Controllers
             MemberMethods memberMethods = new MemberMethods();
             string error = "";
             memberDetails = memberMethods.GetMemberDetails(id, out error);
-
-            // ViewBag.antal = HttpContext.Session.GetString("antal");
             ViewBag.error = error;
             return View(memberDetails);
         }
 
         // metod för att uppdatera databasen
         [HttpPost]
-        public ActionResult UpdateMember(MemberDetails memberDetails, int memberId)
+        public IActionResult UpdateMember(MemberDetails memberDetails, int memberId)
         {
+            // modellvalidering
+            if (!ModelState.IsValid)
+            {
+                return View(memberDetails);
+            }
             MemberMethods memberMethods = new MemberMethods();
-            string error = "";
-            int Result = memberMethods.UpdateMemberDetails(memberDetails, memberId, out error);
-            if(Result == 1)
+            string errormsg = "";
+
+            // uppdatera medlemmen
+            int result = memberMethods.UpdateMemberDetails(memberDetails, memberId, out errormsg);
+
+            if (result == 1)
             {
                 return RedirectToAction("SelectMembers");
             }
-            // ViewBag.antal = HttpContext.Session.GetString("antal");
-            ViewBag.error = error;
+            ViewBag.error = errormsg;
             return View(memberDetails);
         }
-
-
+        
         [HttpGet]
         public IActionResult Create()
         {
             return View("CreateMember");
         }
+        
+
         [HttpPost]
         public IActionResult Create(MemberDetails memberDetails)
         {
-            string errormsg = "";
+            // 1. Modellvalidering
+            if (!ModelState.IsValid)
+            {
+                return View(memberDetails);
+            }
+
             MemberMethods memberMethods = new MemberMethods();
+            string errormsg = "";
+
+            // 2. Check om Email/Phone redan finns
             if (memberMethods.MemberExists(memberDetails.Email, memberDetails.Phone, out errormsg))
             {
                 ViewBag.error = "A member with the same email or phone number already exists!";
-                return View("CreateMember", memberDetails);
+                return View(memberDetails);
             }
+
+            // 3. Insert
             int result = memberMethods.InsertMember(memberDetails, out errormsg);
-            if(result == 1)
+
+            if (result == 1)
             {
                 return RedirectToAction("SelectMembers");
             }
+
+            // 4. Om något gick fel
             ViewBag.error = errormsg;
-            return View("CreateMember", memberDetails);
+            return View(memberDetails);
         }
+
 
         // metod för att ta bort en medlem
         [HttpGet]
@@ -138,7 +187,6 @@ namespace Laboration_3.Controllers
             }
         }
 
-
         // metod för filtrera member
         [HttpGet]
         public IActionResult FilterMembers(string firstName, string lastName, int? minAge, int? maxAge, int? minScore, int? maxScore)
@@ -149,7 +197,6 @@ namespace Laboration_3.Controllers
             ViewBag.error = errormsg;
             return View("FilterMembers", filtered);
         }
-
 
         // visa filtervyn
         [HttpGet]
