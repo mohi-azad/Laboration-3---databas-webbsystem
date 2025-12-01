@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Laboration_3.Models.CompetitionView>
+<h2>Add Member to Tournament</h2>
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger">@ViewBag.error</div>
+}
+
+<form asp-action="Add" method="post">
+    <div class="form-group">
+        <label>Member ID</label>
+        <input type="number" name="memberId" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Tournament ID</label>
+        <input type="number" name="tournamentId" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Add</button>
+</form>
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back</a>
+</p>

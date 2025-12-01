@@ -204,6 +204,5 @@ namespace Laboration_3.Controllers
         {
             return View("FilterMembers");
         }
-
     }
 }

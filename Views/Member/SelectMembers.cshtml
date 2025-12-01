@@ -101,10 +101,11 @@
                 <td>@item.Score</td>
 
                 <td>
-                    @Html.ActionLink("Edit", "UpdateMember", new { id = item.MemberId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.MemberId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.MemberId })
+                    @Html.ActionLink("Edit", "UpdateMember", new { id = item.MemberId },new{ @class = "btn btn-warning btn-sm" })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.MemberId },new { @class = "btn btn-danger btn-sm" })
+                    @Html.ActionLink("Details", "Details", new { id = item.MemberId },new { @class = "btn btn-info btn-sm" })
                 </td>
+
             </tr>
         }
     </tbody>

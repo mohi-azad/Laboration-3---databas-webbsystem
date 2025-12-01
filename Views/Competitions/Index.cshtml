@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Laboration_3.Models.CompetitionView>
+
+<h2>Competitions</h2>
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger">@ViewBag.error</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Member Name</th>
+            <th>Tournament Type</th>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MemberName</td>
+                <td>@item.Sort</td>
+                <td>@item.T_date.ToShortDateString()</td>
+                <td>@item.Start_time</td>
+                <td>
+                    <form asp-action="Remove" method="post" style="display:inline">
+                        <input type="hidden" name="memberId" value="@item.MemberId" />
+                        <input type="hidden" name="tournamentId" value="@item.TournamentId" />
+                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Add" class="btn btn-success">Add Member to Tournament</a>
+</p>

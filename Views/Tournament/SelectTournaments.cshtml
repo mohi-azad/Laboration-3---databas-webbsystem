@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Laboration_3.Models.Tournament>
+
+<h2>All Tournaments</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Create New Tournament</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().TournamentId)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().Sort)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().T_date)</th>
+            <th>@Html.DisplayNameFor(m => m.FirstOrDefault().Start_time)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TournamentId</td>
+                <td>@item.Sort</td>
+                <td>@item.T_date.ToString("yyyy-MM-dd")</td>
+                <td>@item.Start_time.ToString(@"hh\:mm")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.TournamentId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.TournamentId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,23 @@
+﻿@model Laboration_3.Models.Tournament
+<h2>Edit Tournament</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="TournamentId" />
+
+    <div class="form-group">
+        <label asp-for="Sort"></label>
+        <input asp-for="Sort" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="T_date"></label>
+        <input asp-for="T_date" type="date" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Start_time"></label>
+        <input asp-for="Start_time" type="time" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
