@@ -24,16 +24,27 @@ namespace Laboration_3.Controllers
         [HttpPost]
         public IActionResult Add(int memberId, int tournamentId)
         {
-            string errormsg = "";
+            if (!ModelState.IsValid)
+            {
+                return View("Index");
+            }
             CompetitionsMethods compMethods = new CompetitionsMethods();
-
+            string errormsg = "";
+            //kontrollerar om dubbletter finns i databasen
+            if (compMethods.CompetitionExists(memberId, tournamentId, out errormsg))
+            {
+                ViewBag.error = "The member does already exist in this tournament!";
+                return View("~/Views/Competitions/Add.cshtml");
+            }
+            // om inte så ska den lägga till
             int result = compMethods.AddCompetition(memberId, tournamentId, out errormsg);
 
             if (result > 0)
+            {
                 return RedirectToAction("Index");
-
+            }
             ViewBag.error = errormsg;
-            return View("~/Views/Competitions/Add.cshtml");
+            return View("~/Views/Competitions/Add.cshtml");        
         }
 
         // POST: Ta bort medlem från turnering

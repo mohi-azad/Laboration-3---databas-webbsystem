@@ -113,44 +113,37 @@ namespace Laboration_3.Models
             return list;
         }
 
+        // metod för att hantera dubbletter
 
-        /*
-        // metod för att läsa alla competitions 
-        public List<Competition> GetAllCompetitions(out string errormsg)
+        // en method för att undvika dubbletter vid insert
+        public bool CompetitionExists(int memberId, int tournamentId, out string errormsg)
         {
-            errormsg = "";
-            var list = new List<Competition>();
             SqlConnection sqlConnection = new SqlConnection();
             sqlConnection.ConnectionString =
-                "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BiljardKlubb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+                  "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BiljardKlubb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
+            string sqlstring = "SELECT COUNT (*) FROM Competitions Where MemberId =@MemberId AND TournamentId =@TournamentId";
+            SqlCommand sqlCommand = new SqlCommand(sqlstring, sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@MemberId", memberId);
+            sqlCommand.Parameters.AddWithValue("@TournamentId", tournamentId);
+
+            try
             {
-                string sqlstring = "SELECT MemberId, TournamentId FROM Competitions";
-
-                SqlCommand sqlCommand = new SqlCommand(sqlstring, sqlConnection);
-
-                try
-                {
-                    sqlConnection.Open();
-                    SqlDataReader reader = sqlCommand.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        list.Add(new Competition
-                        {
-                            MemberId = (int)reader["MemberId"],
-                            TournamentId =(int)reader["TournamentId"]
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    errormsg = ex.Message;
-                }
+                sqlConnection.Open();
+                int count = (int)sqlCommand.ExecuteScalar();
+                errormsg = "";
+                return count > 0;
             }
-            return list;
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return true;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
-        */
 
     }
 }
