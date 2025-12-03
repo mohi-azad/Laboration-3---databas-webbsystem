@@ -6,27 +6,6 @@ namespace Laboration_3.Controllers
 {
     public class MemberController : Controller
     {
-        /*
-        public IActionResult InsertMember()
-        {
-            MemberDetails memberDetails = new MemberDetails();
-            MemberMethods memberMethods = new MemberMethods();
-            int i = 0;
-            string error = "";
-
-            memberDetails.FirstName = "Mattias";
-            memberDetails.LastName = "Andersson";
-            memberDetails.Email = "mattias.andersson@gmail.com";
-            memberDetails.Phone = "073 88 88 888";
-            memberDetails.Age = 35;
-            memberDetails.Score = 1800;
-
-            i = memberMethods.InsertMember(memberDetails, out error);
-            ViewBag.error = error;
-            ViewBag.antal = i;
-            return View("CreateMember");
-        }
-        */
 
         // metod för att visa medlemmar
         public ActionResult SelectMembers(string search, string sortField, string sortOrder)
@@ -127,7 +106,7 @@ namespace Laboration_3.Controllers
             // 1. Modellvalidering
             if (!ModelState.IsValid)
             {
-                return View(memberDetails);
+                return View("CreateMember",memberDetails);
             }
 
             MemberMethods memberMethods = new MemberMethods();
@@ -137,7 +116,7 @@ namespace Laboration_3.Controllers
             if (memberMethods.MemberExists(memberDetails.Email, memberDetails.Phone, out errormsg))
             {
                 ViewBag.error = "A member with the same email or phone number already exists!";
-                return View(memberDetails);
+                return View("CreateMember",memberDetails);
             }
 
             // 3. Insert
@@ -150,7 +129,7 @@ namespace Laboration_3.Controllers
 
             // 4. Om något gick fel
             ViewBag.error = errormsg;
-            return View(memberDetails);
+            return View("CreateMember", memberDetails);
         }
 
 
@@ -197,8 +176,6 @@ namespace Laboration_3.Controllers
             ViewBag.error = errormsg;
             return View("FilterMembers", filtered);
         }
-
-        // visa filtervyn
         [HttpGet]
         public IActionResult FilterView()
         {
